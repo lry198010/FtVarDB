@@ -1,16 +1,16 @@
 import subprocess
-from functools import partial
-from multiprocessing import Process, Pool
-import json
 import os
 import pathlib
 
-def run_external_prog(cmd_string):
+def run_external_prog(call_func, cmd_string, **kargs):
     result = subprocess.run(cmd_string,shell=True,capture_output=True)
     if result.returncode != 0:
         print("Error: In run mfeprimer!")
         print(f"Run command: {cmd_string}")
-        print(mfeRunResult.stderr)
+        print(result.stderr.decode())
         return ""
     else:
-        pass
+        if call_func:
+            return call_func(result.stdout.decode(),**kargs)
+        else:
+            return result.stdout.decode()
